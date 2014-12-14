@@ -19,6 +19,7 @@ $(document).ready(function(){
 						type: "DELETE",
 						success: function (data) {
 							console.log('data',data);
+							button.closest("li").remove();
 						}
 					});
 				}
