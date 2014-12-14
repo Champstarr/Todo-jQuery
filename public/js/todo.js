@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	//auto-load the save file
-	$.get("/todo_save.txt", function(data){
-		var list_items = jQuery.parseJSON(data);
+	$.get("/item", function(data){
+		var list_items = data;
 		for (var i = 0; i < list_items.length; i++) {
 			var new_item = $("<li></li>");
 			new_item.addClass("li_item");
