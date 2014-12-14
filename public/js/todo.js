@@ -17,7 +17,16 @@ $(document).ready(function(){
 			var value = $(this).val();//accessing a string variable (below)
 			$('#to_do_list').append('<li class="li_item"><input type="checkbox" class="checkbox"><span>'+value+'</span></li>'); 
 			$(this).val('');
+			var post_data = {
+    		new_item : {
+        title : "my task",
+        checked : false
+    }
+}
+
+$.post('/item', post_data) 
 		}
+
 	});
 	$('body').on("click", ".checkbox", function(e){
 		var status = this.checked 
@@ -37,22 +46,5 @@ $(document).ready(function(){
 		}
 
 	});
-	$("#save").click(function (e) {
-		var list =[];
 
-		$(".li_item").each(function (i, obj){
-			list.push({
-				index: i,
-				title: $(obj).find("span").html(),
-				completed: $(obj).find("input:checked").length>0
-			});
-		});
-		console.log(list);
-
-		 var data = {
-		 	list_to_save: JSON.stringify(list)
-		 };
-		 
-		 $.post("/save", data);
-	});
 });
