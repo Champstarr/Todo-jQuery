@@ -1,7 +1,9 @@
 var express = require('express')
 var app = express()
 var bodyParser = require('body-parser');
-var MongoClient = require('mongodb').MongoClient;
+var mongodb = require('mongodb');
+var MongoClient = mongodb.MongoClient;
+var ObjectID = mongodb.ObjectID;
 var fs = require('fs');
 
 app.use(express.static('public'));
@@ -32,7 +34,7 @@ app.post('/item', function(req,res){
     collection.insert(req.body.new_item, function(err, item) {
       // Show the item that was just inserted; contains the _id field
       // Note that it is an array containing a single object
-      console.log(item[0]._id);
+      console.log(item[0]);
       res.send(item[0]._id);
 
       // Log the number of items in the collection
@@ -42,7 +44,7 @@ app.post('/item', function(req,res){
 
       // Locate all the entries using find
       collection.find().toArray(function(err, results) {
-        console.log(results);
+        // console.log(results);
 
         // Close the db connection
         db.close();
@@ -63,12 +65,39 @@ app.post('/item', function(req,res){
     collection.find().toArray(function(err, results){
       res.send(results);
 
+      db.close();
+
 
     });
 
   });
 
- })
+ });
+
+ app.delete('/items/:id', function(req,res){
+  // connect_to_db( function (collection) {
+  //   var _id = req.params.id;
+  //   collection.remove({"_id": new objectID(_id)}, function (err,result) {
+  //     if(err) throw err;
+  //     res.json({ success: "success"});
+  //     collection.db.close();
+  //   });
+  // }); 
+   MongoClient.connect('mongodb://localhost:27017/todosdb', function(err, db) {
+    if (err) {
+      throw err;
+    }
+
+    // Find the collection todos (or create it if it doesn't already exist)
+    var collection = db.collection('todos');
+    var _id = req.params.id;
+    collection.remove({"_id": new ObjectID(_id)}, function (err,result) {
+      if(err) throw err;
+      res.json({ success: "success"});
+      collection.db.close();
+    });
+  });
+ });
 
 var server = app.listen(3000, function () {
 
